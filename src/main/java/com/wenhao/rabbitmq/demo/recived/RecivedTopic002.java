@@ -12,6 +12,7 @@ public class RecivedTopic002 {
      */
     private static final String QUEUE_INFORM_SMS = "queue_topic_inform_sms";
     private static final String EXCHANGE_TOPIC_INFORM = "exchange_topic_inform";
+    private static final String ROUTINGKEY_SMS = "inform.#.sms.#";
 
     public static void main(String[] args) {
         ConnectionFactory connectionFactory;
@@ -45,7 +46,7 @@ public class RecivedTopic002 {
              * param1:队列名称
              * param2:交换机名称
              */
-            channel.queueBind(QUEUE_INFORM_SMS, EXCHANGE_TOPIC_INFORM, "inform.#.sms.#");
+            channel.queueBind(QUEUE_INFORM_SMS, EXCHANGE_TOPIC_INFORM, ROUTINGKEY_SMS);
             DefaultConsumer consumer = new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {

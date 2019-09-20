@@ -19,6 +19,8 @@ public class SendTopic001 {
     private static final String QUEUE_INFORM_EMAIL = "queue_topic_inform_email";
     private static final String QUEUE_INFORM_SMS = "queue_topic_inform_sms";
     private static final String EXCHANGE_TOPIC_INFORM = "exchange_topic_inform";
+    private static final String ROUTINGKEY_EMAIL = "inform.#.email.#";
+    private static final String ROUTINGKEY_SMS = "inform.#.sms.#";
 
     public static void main(String[] args) throws IOException, TimeoutException {
         Connection connection = null;
@@ -61,8 +63,8 @@ public class SendTopic001 {
              * param1:队列名称
              * param2:交换机名称
              */
-            channel.queueBind(QUEUE_INFORM_EMAIL, EXCHANGE_TOPIC_INFORM, QUEUE_INFORM_EMAIL);
-            channel.queueBind(QUEUE_INFORM_SMS, EXCHANGE_TOPIC_INFORM, QUEUE_INFORM_SMS);
+            channel.queueBind(QUEUE_INFORM_EMAIL, EXCHANGE_TOPIC_INFORM, ROUTINGKEY_EMAIL);
+            channel.queueBind(QUEUE_INFORM_SMS, EXCHANGE_TOPIC_INFORM, ROUTINGKEY_SMS);
             /**
              * 发布消息
              * 发布到不存在的交换机将会收到一个通道级别的协议异常,从而导致关闭改通道
@@ -72,17 +74,17 @@ public class SendTopic001 {
              *  param4:消息体
              */
             for (int i = 0; i < 12; i++) {
-                String message = "hello rabbitmq"+ i;
+                String message = "hello rabbitmq email"+ i;
                 channel.basicPublish(EXCHANGE_TOPIC_INFORM, "inform.email", null, message.getBytes());
                 System.out.println("发送的消息为:=" + message);
             }
             for (int i = 0; i < 3; i++) {
-                String message = "hello rabbitmq"+ i;
+                String message = "hello rabbitmq sms"+ i;
                 channel.basicPublish(EXCHANGE_TOPIC_INFORM, "inform.sms", null, message.getBytes());
                 System.out.println("发送的消息为:=" + message);
             }
             for (int i = 0; i < 7; i++) {
-                String message = "hello rabbitmq"+ i;
+                String message = "hello rabbitmq email sms"+ i;
                 channel.basicPublish(EXCHANGE_TOPIC_INFORM, "inform.sms.email", null, message.getBytes());
                 System.out.println("发送的消息为:=" + message);
             }
