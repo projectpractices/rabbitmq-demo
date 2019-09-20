@@ -7,9 +7,14 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class Send001 {
+/**
+ * 工作队列模式
+ */
+public class SendWorkQueue001 {
 
-    //定义队列名称
+    /**
+     * 队列名称
+     */
     private static final String QUEUE_NAME = "hello";
 
     public static void main(String[] args) throws IOException, TimeoutException {
@@ -50,15 +55,17 @@ public class Send001 {
              *  param3:消息的属性
              *  param4:消息体
              */
-            channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
-            System.out.println("发送的消息为:="+message);
+            for (int i = 0; i < 10; i++) {
+                channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
+                System.out.println("发送的消息为:=" + message);
+            }
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
-        }finally {
-            if (channel != null){
+        } finally {
+            if (channel != null) {
                 channel.close();
             }
-            if (connection != null){
+            if (connection != null) {
                 connection.close();
             }
         }

@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
-public class Recived001 {
-    //定义队列名称
-    private static final String QUEUE_NAME = "hello";
+public class RecivedPublishSubscribe001 {
+    /**
+     * 队列名称
+     */
+    private static final String QUEUE_INFORM_EMAIL = "queue_inform_email";
+    private static final String EXCHANGE_FANOUT_INFORM = "exchange_fanout_inform";
 
     public static void main(String[] args) {
         ConnectionFactory connectionFactory;
@@ -22,6 +25,27 @@ public class Recived001 {
             connectionFactory.setVirtualHost("/");
             connection = connectionFactory.newConnection();
             Channel channel = connection.createChannel();
+            /**
+             * 声明交换机
+             * param1:交换机名称
+             * param2:交换机类型
+             */
+            channel.exchangeDeclare(EXCHANGE_FANOUT_INFORM, BuiltinExchangeType.FANOUT);
+            /**
+             * 声明队列:如果rabbitmq中没有 将会自动创建
+             * param1:队列名称
+             * param2:是否持久化
+             * param3:是否独占此连接
+             * param4:队列不再使用时是否自动删除
+             * param4:队列参数
+             */
+            channel.queueDeclare(QUEUE_INFORM_EMAIL, true, false, false, null);
+            /**
+             * 队列和交换机绑定
+             * param1:队列名称
+             * param2:交换机名称
+             */
+            channel.queueBind(QUEUE_INFORM_EMAIL, EXCHANGE_FANOUT_INFORM, "");
             DefaultConsumer consumer = new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
@@ -41,7 +65,7 @@ public class Recived001 {
              * param2:是否自动应答
              * param3:回调方法
              */
-            channel.basicConsume(QUEUE_NAME, true, consumer);
+            channel.basicConsume(QUEUE_INFORM_EMAIL, true, consumer);
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
         }

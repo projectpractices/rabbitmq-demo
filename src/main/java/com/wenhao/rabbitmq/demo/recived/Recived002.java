@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
-public class Recived001 {
+public class Recived002 {
     //定义队列名称
     private static final String QUEUE_NAME = "hello";
 
@@ -33,6 +33,8 @@ public class Recived001 {
                     long deliveryTag = envelope.getDeliveryTag();
                     String message = new String(body, StandardCharsets.UTF_8);
                     System.out.println("收到的消息为：" + message+"");
+                    //int i = 1 / 0;
+                    //System.out.println(i);
                 }
             };
 
